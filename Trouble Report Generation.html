@@ -1,0 +1,1264 @@
+<!--[ID PROD] Trouble Report Generation-->
+<script>
+AJS.toInit(function(){
+	/* check browser
+	*/
+	if(window.RJS) { RJS.CONFLUENCE.isSupportBrowser(["chrome","firefox","safari"]); };
+	/* aui Init 
+	*/
+	if(window.RJS) { RJS.CONFLUENCE.auiInit(); };
+	$("#alert_msg").hide();
+	$("#other_system").hide();
+	$("#other_feature").hide();
+	$("#other_region").hide();
+	$("#viber_report").hide();
+	$("#teams_report").hide();
+	$("#tranp_report").hide(); 
+	$("#manually_copyMST").hide();
+
+
+// Escalation Status
+$(function () {
+    checkval(); // this is launched on load
+    $("input[name='radiogroup-3738']").click(function () {
+        checkval(); // this is launched on checkbox click
+    });
+
+});
+function checkval() {
+   			if ($("#radiofield-3739").is(":checked")) { 		//AM
+				$('#general_manager').val("Chiba");
+				$('#senior_manager').val("Luffy/Harish/Okada/Martha/Tai");
+				$('#regional_manager').val("Vipin");
+				$('#manager').val("Okada/Dai/Tai/Martha");
+    		} else if ($("#radiofield-3740").is(":checked")) { 	//AP
+				$('#general_manager').val("Chiba");
+				$('#senior_manager').val("Luffy/Harish/Okada/Martha/Tai");
+				$('#regional_manager').val("Okada");
+				$('#manager').val("Okada/Dai/Tai/Martha");
+    		} else if ($("#radiofield-3741").is(":checked")) { 	//EU
+				$('#general_manager').val("Chiba");
+				$('#senior_manager').val("Luffy/Harish/Okada/Martha/Tai");
+				$('#regional_manager').val("Breno");
+				$('#manager').val("Okada/Dai/Tai/Martha");
+    		} else if ($("#radiofield-3742").is(":checked")) { 	//JID
+				$('#general_manager').val("Chiba");
+				$('#senior_manager').val("Luffy/Harish/Okada/Martha/Tai");
+				$('#regional_manager').val("Luffy");
+				$('#manager').val("Okada/Dai/Tai/Martha");
+    		} else {
+				$('#general_manager').val("");
+				$('#senior_manager').val("");
+				$('#regional_manager').val("");
+				$('#manager').val("");
+			}
+	}
+//Time Fomate
+	$('#occ_time').datepicker({
+		dateFormat: "yy/mm/dd",
+		maxDate : 0,
+		onSelect: function (selected) {
+            var dt = new Date(selected);
+            dt.setDate(dt.getDate());
+            $("#detct_time").datepicker("option", "minDate", dt);
+            $("#rec_time").datepicker("option", "minDate", dt);
+   		},
+	});
+	$('#detct_time').datepicker({
+		dateFormat: "yy/mm/dd",
+		maxDate : 0,
+		onSelect: function (selected) {
+            var dt = new Date(selected);
+            dt.setDate(dt.getDate());
+            $("#occ_time").datepicker("option", "maxDate", dt);
+			$("#rec_time").datepicker("option", "minDate", dt);
+   		},
+	});
+	$('#rec_time').datepicker({
+		dateFormat: "yy/mm/dd",
+		maxDate : 0,
+		onSelect: function (selected) {
+            var dt = new Date(selected);
+            dt.setDate(dt.getDate());
+            $("#detct_time").datepicker("option", "maxDate", dt);
+			$("#occ_time").datepicker("option", "maxDate", dt);
+   		},
+	});
+$(function () {
+    $("input[name='radiogroup-1511']").click(function () {
+       if ($("#radiofield-1512").is(":checked")) {
+			$('#rec_time').val("Under Recovery");
+			$("#under_rec_time").hide();
+		} else {
+			$('#rec_time').val("");
+			$("#under_rec_time").show();
+		}
+    });
+
+});
+// other ID Service/System
+$(function () {
+        $("input[name='checkboxgroup-2195']").click(function () {
+            if ($("#checkbox-2214").is(":checked")) {
+                $("#other_system").show();
+			} else {
+				$("#other_system").hide();
+			}
+        });
+    });
+
+// other feature
+$(function () {
+        $("input[name='checkboxgroup-2311']").click(function () {
+            if ($("#checkbox-2191").is(":checked")) {
+                $("#other_feature").show();
+			} else {
+				$("#other_feature").hide();
+			}
+        });
+    });
+// other region
+$(function () {
+        $("input[name='checkboxgroup-2494']").click(function () {
+            if ($("#checkbox-2501").is(":checked")) {
+                $("#other_region").show();
+			} else {
+				$("#other_region").hide();
+			}
+        });
+    });
+// Manually copy MS Teams
+$(function () {
+		$("input[name='radiogroup-2588']").click(function () {
+			if ($("#radiofield-2589").is(":checked") && !($.browser.chrome)) {
+                $("#manually_copyMST").show();
+			} else {
+				$("#manually_copyMST").hide();
+			}
+        });
+    });
+});
+</script>	
+
+
+
+
+<input type="hidden" name="project" value="IDCS" />
+<input type="hidden" name="issuetype" value="29" />
+<input type="hidden" name="csd-formId" value="691" />
+
+<div>
+	<div class="form_title" >Trouble Content (Input)</div>
+</div>
+</br>
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Incident Overview<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text long-field" name="summary" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" />
+</div>
+</br>
+<fieldset class="group" data-jira="description:radio" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="radiofield-txd26ph9ny">
+	<legend data-jira="title">Status<span class="aui-icon icon-required"></span></legend>
+	<span id="radiofield-txd26ph9ny"></span>
+	<div>
+		<input class="radio" type="radio" id="radiofield-1512" name="radiogroup-1511" value="In Progress">
+		<label for="radiofield-1512">In Progress</label>
+		&emsp;
+		<input class="radio" type="radio" id="radiofield-1513" name="radiogroup-1511" value="Recovered">
+		<label for="radiofield-1513">Recovered</label>
+	</div>
+	<div class="description">
+		
+	</div>
+</fieldset>
+
+<fieldset class="group" data-jira="description:radio" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="radiofield-b3x7h06py8">
+	<div class="description">
+		<a href="https://confluence.rakuten-it.com/confluence/display/id/%5BWIP%5D%5BIncident+handling%5D+On-call+rotation+calendar#id-[WIP][Incidenthandling]On-callrotationcalendar-IV.DefiningRank" target="_blank"> <b>Defining Rank 🔍</b></a>
+	</div>
+	<legend data-jira="title">Rank<span class="aui-icon icon-required"></span></legend>
+	<span id="radiofield-b3x7h06py8"></span>
+	<div>
+		<input class="radio" type="radio" id="radiofield-2599" name="radiogroup-2598" value="S">
+		<label for="radiofield-2599">S</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-2600" name="radiogroup-2598" value="A">
+		<label for="radiofield-2600">A</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-2601" name="radiogroup-2598" value="B">
+		<label for="radiofield-2601">B</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-2602" name="radiogroup-2598" value="C">
+		<label for="radiofield-2602">C</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-2603" name="radiogroup-2598" value="Unclear">
+		<label for="radiofield-2603">Unclear</label>
+	</div>
+	<div class="description">
+		
+	</div>
+</fieldset>
+</br>
+<div class="description">
+			&emsp;&emsp;&ensp;&nbsp;Timestamp Format&emsp;&ensp;&nbsp;YYYY/MM/DD&emsp;&emsp;&ensp;&emsp;24HH&emsp;&emsp;&ensp;:&emsp;&emsp;&ensp;MM&emsp;&emsp;:&emsp;&emsp;&ensp;SS&emsp;&emsp;&emsp; &nbsp;JST
+</div>
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Occurrence Time<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-field" id="occ_time" name="textfield-1741" placeholder="2020/04/18" style="max-width:100px;"/>
+	<select class="select" id="occ_time1" name="textfield-1742" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="occ_time2" name="textfield-1743" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="occ_time3" name="textfield-1744" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select> JST
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Detection Time<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id="detct_time" name="textfield-1817" placeholder="2020/04/18" style="max-width:100px;"/>
+	<select class="select" id="detct_time1" name="textfield-1818" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="detct_time2" name="textfield-1819" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="detct_time3" name="textfield-1820" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select> JST
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:text" id = "under_rec_time">
+	<label data-jira="title">Recovery Time<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id="rec_time" name="textfield-1888" placeholder="2020/04/18" style="max-width:100px;"/>
+	<select class="select" id="rec_time1" name="textfield-1889" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="rec_time2" name="textfield-1890" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select>
+	<select class="select" id="rec_time3" name="textfield-1891" placeholder="24H" style="max-width:70px;" >
+		<option value="00">00</option>
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+		<option value="32">32</option>
+		<option value="33">33</option>
+		<option value="34">34</option>
+		<option value="35">35</option>
+		<option value="36">36</option>
+		<option value="37">37</option>
+		<option value="38">38</option>
+		<option value="39">39</option>
+		<option value="40">40</option>
+		<option value="41">41</option>
+		<option value="42">42</option>
+		<option value="43">43</option>
+		<option value="44">44</option>
+		<option value="45">45</option>
+		<option value="46">46</option>
+		<option value="47">47</option>
+		<option value="48">48</option>
+		<option value="49">49</option>
+		<option value="50">50</option>
+		<option value="51">51</option>
+		<option value="52">52</option>
+		<option value="53">53</option>
+		<option value="54">54</option>
+		<option value="55">55</option>
+		<option value="56">56</option>
+		<option value="57">57</option>
+		<option value="58">58</option>
+		<option value="59">59</option>
+		<option value=""></option>
+		<option value=""></option>
+	</select> JST
+</div>
+</br>
+<fieldset class="group" data-jira="description:checkbox" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="checkbox-9x10szo5sb">
+	<legend data-jira="title">Impacted ID Service/System<span class="aui-icon icon-required"></span></legend>
+	<span id="checkbox-9x10szo5sb"></span>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2196" name="checkboxgroup-2195" value="AddressBook">
+		<label for="checkbox-2196">AddressBook</label>       
+		<input class="checkbox" type="checkbox" id="checkbox-2197" name="checkboxgroup-2195" value="AddressSearch API">
+		<label for="checkbox-2197">AddressSearch API</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2198" name="checkboxgroup-2195" value="BHG">
+		<label for="checkbox-2198">BHG</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2199" name="checkboxgroup-2195" value="CAT">
+		<label for="checkbox-2199">CAT</label>
+	 	<input class="checkbox" type="checkbox" id="checkbox-2200" name="checkboxgroup-2195" value="CMP">
+		<label for="checkbox-2200">CMP</label> 
+		<input class="checkbox" type="checkbox" id="checkbox-2201" name="checkboxgroup-2195" value="JID">
+		<label for="checkbox-2201">JID</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2202" name="checkboxgroup-2195" value="JID3Web">
+		<label for="checkbox-2202">JID3Web</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2203" name="checkboxgroup-2195" value="Jumbo">
+		<label for="checkbox-2203">Jumbo</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2204" name="checkboxgroup-2195" value="Login History">
+		<label for="checkbox-2204">Login History</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2205" name="checkboxgroup-2195" value="MyR">
+		<label for="checkbox-2205">MyR</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2206" name="checkboxgroup-2195" value="Omni UI">
+		<label for="checkbox-2206">Omni UI</label>
+	 	<input class="checkbox" type="checkbox" id="checkbox-2207" name="checkboxgroup-2195" value="Omni UI(External ID Service)">
+		<label for="checkbox-2207">Omni UI(External ID Service)</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2208" name="checkboxgroup-2195" value="OpenID">
+		<label for="checkbox-2208">OpenID</label>
+ 	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2209" name="checkboxgroup-2195" value="R-Login">
+		<label for="checkbox-2209">R-Login</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2210" name="checkboxgroup-2195" value="RID">
+		<label for="checkbox-2210">RID</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2211" name="checkboxgroup-2195" value="RID OpenID Connect">
+		<label for="checkbox-2211">RID OpenID Connect</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2212" name="checkboxgroup-2195" value="Social Auth">
+		<label for="checkbox-2212">Social Auth</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2213" name="checkboxgroup-2195" value="Viber Linkage">
+		<label for="checkbox-2213">Viber Linkage</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2214" name="checkboxgroup-2195" value="Others">
+		<label for="checkbox-2214">Others</label>
+	</div>
+</fieldset>
+
+<div class="field-group" data-jira="description:text" id="other_system">
+	<label data-jira="title">Other ID Service/System<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" name="textfield-1959" style="max-width:320px;" />
+</div>
+<fieldset class="group" data-jira="description:checkbox" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="checkbox-pcni9aeapz">
+	<legend data-jira="title">Impacted Feature<span class="aui-icon icon-required"></span></legend>
+	<span id="checkbox-pcni9aeapz"></span>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2183" name="checkboxgroup-2311" value="Registration">
+		<label for="checkbox-2183">Registration</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2184" name="checkboxgroup-2311" value="Login">
+		<label for="checkbox-2184">Login</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2185" name="checkboxgroup-2311" value="Profile">
+		<label for="checkbox-2185">Profile</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2186" name="checkboxgroup-2311" value="Account  Recovery">
+		<label for="checkbox-2186">Account  Recovery</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2187" name="checkboxgroup-2311" value="Unregistration">
+		<label for="checkbox-2187">Unregistration</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2188" name="checkboxgroup-2311" value="Tools">
+		<label for="checkbox-2188">Tools</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2189" name="checkboxgroup-2311" value="Batch">
+		<label for="checkbox-2189">Batch</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2190" name="checkboxgroup-2311" value="TBD">
+		<label for="checkbox-2190">TBD</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2191" name="checkboxgroup-2311" value="Others">
+		<label for="checkbox-2191">Others</label>
+	</div>
+	<div class="description">
+		
+	</div>
+</fieldset>
+<div class="field-group" data-jira="description:text" id="other_feature">
+	<label data-jira="title">Other Feature<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" name="textfield-2608" />
+	<div class="description">
+		
+	</div>
+</div>
+<fieldset class="group" data-jira="description:checkbox" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="checkbox-8rhezt8rrb">
+	<legend data-jira="title">Impacted Region<span class="aui-icon icon-required"></span></legend>
+	<span id="checkbox-8rhezt8rrb"></span>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2495" name="checkboxgroup-2494" value="AM">
+		<label for="checkbox-2495">AM</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2496" name="checkboxgroup-2494" value="AP (Except Japan)">
+		<label for="checkbox-2496">AP (Except Japan)</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2497" name="checkboxgroup-2494" value="EU">
+		<label for="checkbox-2497">EU</label>
+	</div>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-2498" name="checkboxgroup-2494" value="Japan">
+		<label for="checkbox-2498">Japan</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2499" name="checkboxgroup-2494" value="TBD">
+		<label for="checkbox-2499">TBD</label>
+		<input class="checkbox" type="checkbox" id="checkbox-2501" name="checkboxgroup-2494" value="Others">
+		<label for="checkbox-2501">Others</label>
+	</div>
+	<div class="description">
+		
+	</div>
+</fieldset>
+<div class="field-group" data-jira="description:text" id="other_region">
+	<label data-jira="title">Other Region<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" name="textfield-2674" />
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:textarea">
+	<div class="description">
+		e.g. - Rakuten Ichiba, 12
+	</div>
+	<label data-jira="title">Impacted Client/Service Name<span class="aui-icon icon-required"></span></label>
+	<textarea class="textarea long-field" name="textarea-2070" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="height:70px;"  placeholder="- 'Service_name1', 'UU_count1'
+- 'Service_name2', 'UU_count2'
+- 'Service_name3', 'UU_count3'"></textarea>
+</div>
+<div class="field-group" data-jira="description:textarea">
+	<label data-jira="title">Trouble Details<span class="aui-icon icon-required"></span></label>
+	<textarea class="textarea long-field" name="textarea-2071" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="height:70px;"  placeholder=""></textarea>
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:textarea">
+	<label data-jira="title">Trouble Cause<span class="aui-icon icon-required"></span></label>
+	<textarea class="textarea long-field" name="textarea-2072" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="height:70px;"  placeholder=""></textarea>
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:textarea">
+	<label data-jira="title">Recovery Action<span class="aui-icon icon-required"></span></label>
+	<textarea class="textarea long-field" name="textarea-2401" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="height:70px;"  placeholder=""></textarea>
+	<div class="description">
+		
+	</div>
+</div>
+
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title"><a href="https://tranp.intra.rakuten-it.com/issues" target="_blank">TRANP</a><span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text long-field" name="textfield-2472" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup"  placeholder="https://tranp.intra.rakuten-it.com/issues/3930"  />
+</div>
+</br>
+<fieldset class="group" data-jira="description:radio" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="radiofield-uynjtypoeg">
+	<legend data-jira="title">PIC for Escalation Status<span class="aui-icon icon-required"></span></legend>
+	<span id="radiofield-uynjtypoeg"></span>
+	<div>
+		<input class="radio" type="radio" id="radiofield-3739" name="radiogroup-3738" value="AM">
+		<label for="radiofield-3739">AM</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-3740" name="radiogroup-3738" value="AP">
+		<label for="radiofield-3740">AP</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-3741" name="radiogroup-3738" value="EU">
+		<label for="radiofield-3741">EU</label>
+		&emsp;&emsp;
+		<input class="radio" type="radio" id="radiofield-3742" name="radiogroup-3738" value="JID">
+		<label for="radiofield-3742">JID</label>
+	</div>
+</fieldset>
+
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">General Manager<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id = "general_manager" name="textfield-4080" data-aui-validation-field="" />
+</div>
+
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Senior Manager<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id = "senior_manager" name="textfield-4151" data-aui-validation-field="" />
+</div>
+
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Regional Manager<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id = "regional_manager" name="textfield-4227"/>
+</div>
+
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Manager<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" id = "manager" name="textfield-4298"/>
+</div>
+</br>
+<fieldset class="group" data-jira="description:radio" data-aui-validation-field="" data-aui-validation-minchecked="1" data-aui-validation-when="change" data-aui-validation-displayfield="radiofield-otqhw5yqcs">
+	<legend data-jira="title">Report Format<span class="aui-icon icon-required"></span></legend>
+	<span id="radiofield-otqhw5yqcs"></span>
+	<div>
+		<input class="radio" type="radio" id="radiofield-2589" name="radiogroup-2588" value="Microsoft Teams">
+		<label for="radiofield-2589">Microsoft Teams</label>&ensp;
+		<input class="radio" type="radio" id="radiofield-2590" name="radiogroup-2588" value="Viber">
+		<label for="radiofield-2590">Viber</label>&ensp;
+		<input class="radio" type="radio" id="radiofield-2591" name="radiogroup-2588" value="TRANP">
+		<label for="radiofield-2591">TRANP</label>
+	</div>
+	<div class="description">
+	Note: When posting on TEAMS/ID-Clients-Communication>Trouble Report, do not forget to use '@Trouble Report' mention/tag and flag as "IMPORTANT".
+	</div>
+</fieldset>
+<div id="manually_copyMST">
+<fieldset class="group" data-jira="description:checkbox">
+	<legend data-jira="title"> </legend>
+	<div>
+		<input class="checkbox" type="checkbox" id="checkbox-1184" name="checkboxgroup-1183" value="on">
+		<label for="checkbox-1184">Manually Copy MS Teams Trouble Report</label>
+	</div>
+	<div class="description">
+		
+	</div>
+</fieldset>
+</div>
+<div class="field-group" data-jira="description:text" id="alert_msg">
+	<label data-jira="title">Alert Message</label>
+	<input type="text" class="text short-field" name="textfield-3487"/>
+</div>
+
+<hr>
+</br>
+<div class="field-group">
+	<button id="submit" class="aui-button submit" onclick="generate_report();">Generate Trouble Report</button>
+</div><br></br>
+
+
+
+
+<div id="viber_report">
+	<div>
+		<div class="form_title" >Trouble Report (Output for Viber)</div>
+	</div>
+	</br>
+	<div>
+		<textarea class="textarea" id="copy_messsage_viber" name="textarea-2195" style="height:635px;width:500px;" ></textarea>
+		<div class="description">
+		
+		</div>
+	</div>
+	<hr>
+	<br>
+	<div>
+		<button id="submit_viber" class="aui-button" onclick="CopyMsgV()">Copy Viber Report</button>
+	</div>
+</div>
+
+</br>
+
+<div id="teams_report">
+	<div>
+		<div class="form_title" >Trouble Report (Output for Teams)</div>
+	</div>
+	</br>
+	<div id="edit_teams">
+		<textarea class="textarea" id="copy_messsage_teams" name="textarea-2196" style="height:635px;width:500px;" ></textarea>
+	</div>
+	<div id = "copy_teams">
+		<div class="description">
+			Please copy manually and paste in Teams channel.
+		</div>
+		<br>
+		<div style="border:1px solid #bdc3c7; margin-bottom: 20px; max-width:500px;"></br>
+			<div id="textTeams" name = "textTeams" contentEditable="true" style="margin-left:10px;" ></div>
+		</div>
+	</div>
+	<hr>
+	<br>
+	<div>
+		<button id="submit_teams_copy" class="aui-button" onclick="CopyMsgT()">Copy Teams Report</button>
+		<button id="submit_teams_edit" class="aui-button" onclick="EditMsgT()">Edit Teams Report</button>
+	</div>
+</div>
+
+</br>
+
+<div id="tranp_report">
+	<div>
+		<div class="form_title" >Trouble Report (Output for Tranp)</div>
+	</div>
+	</br>
+	<div>
+		<textarea class="textarea" id="copy_messsage_tranp" name="textarea-2197" style="height:635px;width:500px;" ></textarea>
+		<div class="description">
+		
+		</div>
+	</div>
+	<hr>
+	<br>
+	<div>
+		<button id="submit_tranp" class="aui-button" onclick="CopyMsgTranp()">Copy TRANP Report</button>
+	</div>
+</div>
+</br>
+
+
+<script>
+
+// Genrate Report
+var generate_report = function(){
+	var summary_system = "";
+	var overview =	document.getElementsByName('summary')[0].value;
+	var status = $("input[type='radio'][name='radiogroup-1511']:checked").val(); //document.getElementsByName('radiogroup-1511').value;
+	var rank = $("input[type='radio'][name='radiogroup-2598']:checked").val();
+	var ot = document.getElementsByName('textfield-1741')[0].value;
+	var ot1 = document.getElementsByName('textfield-1742')[0].value;
+	var ot2 = document.getElementsByName('textfield-1743')[0].value;
+	var ot3 = document.getElementsByName('textfield-1744')[0].value;
+	var dt = document.getElementsByName('textfield-1817')[0].value;
+	var dt1 = document.getElementsByName('textfield-1818')[0].value;
+	var dt2 = document.getElementsByName('textfield-1819')[0].value;
+	var dt3 = document.getElementsByName('textfield-1820')[0].value;
+	var rt = ""; //document.getElementsByName('textfield-1888')[0].value;
+	var temp_rt = document.getElementsByName('textfield-1888')[0].value;
+	var rt1 = document.getElementsByName('textfield-1889')[0].value;
+	var rt2 = document.getElementsByName('textfield-1890')[0].value;
+	var rt3 = document.getElementsByName('textfield-1891')[0].value;
+	var system = ""; //document.getElementsByName('checkboxgroup-2195')[0].value;
+	var systemTeams = "";
+	var systemTranp = "";
+	var other_system = document.getElementsByName('textfield-1959')[0].value;
+	var feature = "";
+	var featureTeams = "";
+	var featureTranp = "";
+	var other_feature = document.getElementsByName('textfield-2608')[0].value;
+	var region = "";
+	var regionTeams = "";
+	var regionTranp = "";
+	var other_region = document.getElementsByName('textfield-2674')[0].value;
+	var service = document.getElementsByName('textarea-2070')[0].value;
+ 	var serviceTeams = document.getElementsByName('textarea-2070')[0].value.replace(/(\r\n|\n|\r)/gm, '</br>'); // Need to replace for HTML view. 
+	var details = document.getElementsByName('textarea-2071')[0].value;
+	var cause = document.getElementsByName('textarea-2072')[0].value;
+	var recover_action = document.getElementsByName('textarea-2401')[0].value;
+	var tranp = document.getElementsByName('textfield-2472')[0].value;
+	var pic = $("input[type='radio'][name='radiogroup-3738']:checked").val();
+	var gm = document.getElementsByName('textfield-4080')[0].value;
+	var sm = document.getElementsByName('textfield-4151')[0].value;
+	var rm = document.getElementsByName('textfield-4227')[0].value;
+	var manager = document.getElementsByName('textfield-4298')[0].value;
+	var report_format = $("input[type='radio'][name='radiogroup-2588']:checked").val();
+	
+	if(status == "In Progress"){
+		temp_rt = "Under Recovery";
+		rt = temp_rt;
+	} else {
+		rt = temp_rt + " " + rt1 + ":" + rt2 + ":" + rt3;
+	}
+	if(ot == ""){
+		alert("Please input 'Occurrence Time' !!");
+		return false;
+	}else {
+		ot +=  " " + ot1 + ":" + ot2 + ":" + ot3;
+	}
+	if(dt == ""){
+		alert("Please input 'Detection Time' !!");
+		return false;
+	}else {
+		dt +=  " " + dt1 + ":" + dt2 + ":" + dt3;
+
+	}
+	if(temp_rt == ""){
+		alert("Please input 'Recovery Time' !!");
+		return false;
+	}
+	
+	// Impacted ID Service/system
+	$(function(){
+		for (var i = 0; i < 18; i++) {
+			if (document.getElementsByName('checkboxgroup-2195')[i].checked == true){			
+				system += "\n- " + document.getElementsByName('checkboxgroup-2195')[i].value;
+				systemTeams += "\n<br>- " + document.getElementsByName('checkboxgroup-2195')[i].value;
+				systemTranp += "\n- " + document.getElementsByName('checkboxgroup-2195')[i].value;
+				summary_system += document.getElementsByName('checkboxgroup-2195')[i].value + ", ";
+			}
+		}
+	});
+	if(document.getElementsByName('checkboxgroup-2195')[18].checked == true){
+			if(other_system == ""){
+				alert("Please input 'Other ID Service/System' !!");
+				return false;
+			}
+			system += "\n- " + other_system;
+			systemTeams += "\n<br>- " + other_system;
+			systemTranp += "\n- " + other_system;
+		   	summary_system += other_system;
+	}
+	summary_system = summary_system.replace(/,\s*$/, "");
+
+	// Impacted Feature
+	$(function(){
+		for (var i = 0; i < 8; i++) {
+			if (document.getElementsByName('checkboxgroup-2311')[i].checked == true){			
+				feature += "\n■ " + document.getElementsByName('checkboxgroup-2311')[i].value;
+				featureTeams += "\n<br>■ " + document.getElementsByName('checkboxgroup-2311')[i].value;
+				featureTranp += "\n- " + document.getElementsByName('checkboxgroup-2311')[i].value;
+			}else {
+				feature += "\n□ " + document.getElementsByName('checkboxgroup-2311')[i].value;
+				featureTeams += "\n<br>□ " + document.getElementsByName('checkboxgroup-2311')[i].value;
+			}
+		}
+	});
+	if(document.getElementsByName('checkboxgroup-2311')[8].checked == true){
+			if(other_feature == ""){
+				alert("Please input 'Other Feature' !!");
+				return false;
+			}
+			feature += "\n■ " + other_feature;
+			featureTeams += "\n<br>■ " + other_feature;
+			featureTranp += "\n- " + other_feature;
+	}
+
+	// Impacted Region
+	$(function(){
+		for (var i = 0; i < 5; i++) {
+			if (document.getElementsByName('checkboxgroup-2494')[i].checked == true){			
+				region += "\n■ " + document.getElementsByName('checkboxgroup-2494')[i].value;
+				regionTeams += "\n<br>■ " + document.getElementsByName('checkboxgroup-2494')[i].value;
+				regionTranp += "\n- " + document.getElementsByName('checkboxgroup-2494')[i].value;
+			}else {
+				region += "\n□ " + document.getElementsByName('checkboxgroup-2494')[i].value;
+				regionTeams += "\n<br>□ " + document.getElementsByName('checkboxgroup-2494')[i].value;
+			}
+		}
+	});
+	if(document.getElementsByName('checkboxgroup-2494')[5].checked == true){
+			if(other_region == ""){
+				alert("Please input 'Other Region' !!");
+				return false;
+			}
+			region += "\n■ " + other_region;
+			regionTeams += "\n<br>■ " + other_region;
+	     	regionTranp += "\n- " + other_region;
+	}
+
+	// Mangers Fields
+	if(gm == ""){
+		alert("Please input 'General Manager' Name !!");
+		return false;
+	}
+	if(sm == ""){
+		alert("Please input 'Senior Manager' Name !!");
+		return false;
+	}
+	if(rm == ""){
+		alert("Please input 'Regional Manager' Name !!");
+		return false;
+	}
+	if(manager == ""){
+		alert("Please input 'Manager' Name !!");
+		return false;
+	}
+var	message_viber = "Let me share about\nID Service Trouble report.\n\n```═════════════════════```\n*Incident Overview* :" + "\n[Rank: " + rank + "][" + summary_system + "] " + overview + "\n```─────────────────────```\n*Status* : " + status + "\n*Rank* : " + rank + "\n```─────────────────────```\n*Timestamp (JST)*\n- Occurrence Time:\n ```" + ot + "```\n- Detection Time:\n ```" + dt + "```\n- Recovery Time:\n ```" + rt + "```\n```─────────────────────```\n*Impact* :\n[ID Service/System]" + system + "\n\n[Feature]" + feature + "\n\n[Region]" + region + "\n\n[Client][UU Count]\n" + service + "\n```─────────────────────```\n*Trouble Details* :\n" + details + "\n\n*Cause* :\n" + cause + "\n\n*Recovery Action* :\n" + recover_action + "\n```─────────────────────```\n*TRANP* :\n" + tranp + "\n```─────────────────────```\n*Escalation Status* :" + "\n- General Manager:\n☑ ```" + gm + "```\n- Senior Manager:\n☑ ```" + sm + "```\n- Regional Manager:\n☑ ```" + rm + "```\n- Manager:\n☑ ```" + manager + "```\n```═════════════════════```";
+	document.getElementsByName('textarea-2195')[0].value = message_viber;
+
+var	message_teams = "Let me share about ID Service Trouble report.\n<br>══════════════════════════\n<br><b>Incident Overview:</b>" + "\n<br>[Rank: " + rank + "][" + summary_system + "] " + overview + "\n<br>──────────────────────────\n<br><b>Status:</b> " + status + "\n<br><b>Rank:</b> " + rank + "\n<br>──────────────────────────\n<br><b>Timestamp(JST)</b>\n<br>- Occurrence Time:&ensp;&nbsp;" + ot + "\n<br>- Detection Time:&ensp;&ensp;&ensp;" + dt + "\n<br>- Recovery Time:&emsp;&ensp;&nbsp;" + rt + "\n<br>──────────────────────────\n<br><b>Impact:</b>\n<br>[ID Service/System]" + systemTeams + "\n<br><br>[Feature]" + featureTeams + "\n<br><br>[Region]" + regionTeams + "\n<br>\n<br>[Client][UU Count]\n<br>" + serviceTeams + "\n<br>──────────────────────────\n<br><b>Trouble Details:</b>\n<br>" + details + "\n<br>\n<br><b>Cause:</b>\n<br>" + cause + "\n<br>\n<br><b>Recovery Action:</b>\n<br>" + recover_action + "\n<br>──────────────────────────\n<br><b>TRANP:</b>\n<br>" + tranp + "\n<br>──────────────────────────\n<br><b>Escalation Status</b>" + "\n<br>☑ General Manager: " + gm + "\n<br>☑ Senior Manager: " + sm + "\n<br>☑ Regional Manager: " + rm + "\n<br>☑ Manager: " + manager + "\n<br>══════════════════════════\n<br><br>";
+	document.getElementsByName('textarea-2196')[0].value = message_teams;
+
+
+var	message_tranp = "Duration: 24HH:MM:SS" + "\n\nImpact:\n\n[ID Service/System]" + systemTranp + "\n\n[Feature]" + featureTranp + "\n\n[Region]" + regionTranp + "\n\n[Client][UU Count]\n" + service + "\n\nTrouble Details:\n" + details + "\n\nCause:\n" + cause + "\n\nRecovery Action:\n" + recover_action + "\n\nEscalation Status:" + "\n- General Manager: " + gm + "\n- Senior Manager: " + sm + "\n- Regional Manager: " + rm + "\n- Manager: " + manager ;
+	document.getElementsByName('textarea-2197')[0].value = message_tranp;
+};
+
+/* Report Action
+*/
+function CopyMsgV() {
+  var copyText = document.getElementById("copy_messsage_viber");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+  alert("Viber Report Copied successfully.");
+}
+function CopyMsgT() {
+  $("#edit_teams").hide();
+  $("#copy_teams").hide();
+  $("#submit_teams_copy").hide();
+  $("#submit_teams_edit").hide();
+  $("#textTeams").empty();
+  var teamsReport = document.getElementsByName('textarea-2196')[0].value;
+  $("#textTeams").append(teamsReport);
+  copy('#textTeams');
+  /* var copyText = document.getElementById("textTeams");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+  alert("Teams Report Copied successfully.");*/
+}
+function copy(selector){
+  var $temp = $("<div>");
+  $("body").append($temp);
+  $temp.attr("contenteditable", true)
+       .html($(selector).html()).select()
+       .on("focus", function() { document.execCommand('selectAll',false,null); })
+       .focus();
+  document.execCommand("copy");
+  $temp.remove();
+  if(document.getElementsByName('checkboxgroup-1183')[0].checked == true){   
+		$("#copy_teams").show();
+	} else{
+	 	$("#teams_report").hide();
+		alert("Teams Report Copied successfully.");  
+	}
+}
+function EditMsgT() {
+  $("#copy_teams").hide();
+  //$("#edit_teams").show();
+  $("#submit_teams_copy").hide();
+  $("#submit_teams_edit").hide();
+}
+
+
+function CopyMsgTranp() {
+  var copyText = document.getElementById("copy_messsage_tranp");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+  alert("TRANP Report Copied successfully.");
+}
+
+
+var user_submit = function(){
+	
+ 	if($("input[type='radio'][name='radiogroup-2588']:checked").val() == "Viber"){
+		$("#viber_report").show();
+		$("#teams_report").hide();
+		CopyMsgV();
+	 	$("#viber_report").hide();
+	}else if($("input[type='radio'][name='radiogroup-2588']:checked").val() == "Microsoft Teams"){
+		$("#viber_report").hide();
+		$("#teams_report").show();
+		EditMsgT();
+		CopyMsgT();
+	 	//$("#teams_report").hide();
+	} else if($("input[type='radio'][name='radiogroup-2588']:checked").val() == "TRANP"){
+		$("#viber_report").hide();
+		$("#teams_report").hide();
+		$("#tranp_report").show();
+		CopyMsgTranp();
+	 	$("#tranp_report").hide();
+	} else {
+		$("#viber_report").hide();
+		$("#teams_report").hide();
+		$("#tranp_report").hide();
+	}
+	if(document.getElementsByName('textfield-3487')[0].value =='') {
+		return false;
+	}
+	
+	AJS.$(":hidden[name=description]").remove();
+	AJS.$(":hidden[name=reporter]").remove();
+
+	/* Description の自動生成と設定
+	*/
+	AJS.$("<input>", {
+		type: "hidden",
+		name: "description",
+		value: RJS.CONFLUENCE.fairingDescription(".aui")
+	}).appendTo("#form_request");
+};
+</script>
+

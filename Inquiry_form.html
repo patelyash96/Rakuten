@@ -1,0 +1,962 @@
+<!--Inquiry/Investigation Request-->
+<script>
+AJS.toInit(function(){
+	/* check browser
+	*/
+	if(window.RJS) { RJS.CONFLUENCE.isSupportBrowser(["chrome","firefox","safari"]); };
+	/* aui Init 
+	*/
+	if(window.RJS) { RJS.CONFLUENCE.auiInit(); };
+
+
+	$('#investigationtext').hide();
+	$('#troublereporttext').hide();
+	$('#loadtestMessage').hide();
+});
+</script>
+
+
+
+
+<script>
+AJS.toInit(function(){	
+
+				/*------- Ticket Labels -------*/
+
+
+/*Component Value Assign*/
+
+
+var component_valuelist
+ = {
+"Address-Book":[166734],
+"Address Search":[201228],
+"Batch":[116220],
+"CAT":[139544],
+"CMP":[164617],
+"GCP":[119019],
+"GDPR":[118986],
+"IDSDK":[149956],
+"JID": [116214],
+"Load-Test":[116222],
+"MyR":[189914],
+"OMNI":[139265],
+"OpenID":[116221],
+"R-Login":[116219],
+ "RFB": [219744],
+"RID": [116218],
+"RID OpenID Connect":[141700],
+"Rsession": [220000],
+ "Smartlock":[149957],
+"Omni (External ID System)":[187426],
+"Tools":[116212],
+"Others":[116223]
+};
+
+/*List of Request type based Components (Drop-down)*/
+
+
+var issueType_list = {
+166734:["Inquiry","Bug-Fix"],/* Address-Book Request Types*/  
+
+
+201228:["Inquiry","Investigation","Bug-Fix"],/* Address Search Request Types*/
+
+116220:["Inquiry","Bug-Fix",],/* Batch Request Types*/
+
+139544:["Inquiry","Investigation","Bug-Fix"], /* CAT Request Types*/
+
+
+164617:["Inquiry","Bug-Fix"],/* CMP Request Types*/
+
+119019:["Inquiry","Others"], /* GCP Request Types*/
+
+118986:["Inquiry"], /* GDPR Request Types*/
+
+
+149956:["Inquiry","Others"], /* IDSDK Request Type */
+
+
+116214:["Inquiry","Investigation","ACL-Setting","Bug-Fix","",""], /* JID Request Types*/
+116222:["Inquiry","Monitoring"], /* LoadTest Request Types*/   
+
+189914:["Inquiry","Investigation","Bug-Fix","",""], /* MyR Request Types*/
+
+139265:["Inquiry","Investigation","Onboarding","ACL-Setting","Bug-Fix","",""], /* OMNI Request Types*/
+
+116221:["Inquiry","Bug-Fix"], /* OpenID Request Types*/
+
+116219:["Inquiry","Bug-Fix"],/* R-Login Request Types*/
+
+116218:["Inquiry","Investigation","ACL-Setting","Bug-Fix","",""], /* RID Request Types*/
+
+141700:["Bug-Fix","Configuration-Deletion"],/* ROID Request Types*/
+
+149957:["Inquiry","Configuration"],/* Smartlock Request Types*/   
+
+187426:["Inquiry","Investigation","Onboarding","Bug-Fix","",""], /* Omni (External ID System) Request Types*/
+
+116212:["Investigation","Bug-Fix","Setting"], /* Tools Request Types*/
+
+/* RFB */
+219744:["Inquiry", "Investigation", "Bug", "EmailApproval"],
+
+/* Rsession */
+220000:["Inquiry", "Investigation", "Bug", "EmailApproval"],
+
+116223:["Inquiry","Investigation","ACL-Setting","Bug-Fix","Others","",""] /*Others Request Types*/
+
+};
+var label_list = {
+166734:["Other"], /* Address-Book */
+201228:["Other"], /* Address Search */
+149956:["IDSDK"],
+116214:["JID"],
+116213:["Other"], /* GID */
+116218:["RID"],
+189914:["MyR"],
+139265:["Omni"],
+187426:["Omni-External-ID-Service"],
+139544:["CAT"],
+141700:["RIDOpenIDConnect"],
+116221:["OpenID"],
+116219:["R-Login"],
+116212:["Tools"],
+119019:["Other"], /* GCP */
+118986:["GDPR"],
+164617:["Other"], /* CMP */
+116220:["Other"], /* Batch */
+149957:["Smartlock"], /* Smartlock */
+116223:["Other"], /* Others */
+116222:["Load-Test"],
+220000:["Rsession"],
+219744:["RFB"]
+ };
+
+/*=========> Request type selection based on Components select Logic */
+
+
+	AJS.$('[name=components]').auiSelect2();
+	AJS.$('[name=issueType]').auiSelect2();
+	var labelprefix = "";
+    var labelsurfix = "";
+	var hyphen = "-";
+	var secondarylabel = "";
+
+	AJS.$(Object.keys(component_valuelist)).each(function(i, componentName) {
+	  var componentValue = component_valuelist[componentName];
+      AJS.$("<option>", {value:componentValue, text:componentName}).appendTo('[name=components]');
+    });
+	
+	AJS.$("[name=components]").on("change", function(e){
+		secondarylabel = $('[name=components]').val();
+		AJS.$('[name=issueType] option').remove();
+ 		AJS.$('[name=issueType]').prev('.select2-container').find('a span.select2-chosen').text("Please select...");
+		AJS.$("<option>", {value:"", text:"Please select..."}).appendTo('[name=issueType]');
+		AJS.$("[name=customfield_16400]").prop("selectedIndex", 0);
+   	    var selectedCompo = AJS.$(this).val();
+        var itype = issueType_list[selectedCompo];
+    	labelprefix = label_list[selectedCompo];
+		AJS.$("[id=summary_components]").val(labelprefix);
+		AJS.$(itype).each(function(i,s) {
+         AJS.$("<option>", {value:s, text:s}).appendTo('[name=issueType]');
+       	});
+
+/*=======>Secondary Label*/
+		if(secondarylabel == 164617 || secondarylabel == 139544){	
+			AJS.$("[id=label_2]").val("Unified-UI-Group");
+		}
+		else if(secondarylabel == 116218){
+			AJS.$("[id=label_2]").val("Membership-India");
+		}
+		else if(secondarylabel == 189914){
+			AJS.$("[id=label_2]").val("Service-Enablement");
+		}
+	 	else if(secondarylabel == 219744){
+			AJS.$("[id=label_2]").val("RFB");
+		}
+		else {
+			AJS.$("[id=label_2]").val("IDCS");
+		}
+    });
+	AJS.$("[name=issueType]").on("change", function(e){
+		labelsurfix = $('[name=issueType]').val();
+		
+	//Background Massages
+		var backgroundmessage = $('[name=issueType]').val();   
+		if(backgroundmessage == "Investigation"){
+			$('#investigationtext').show();
+		} else if(backgroundmessage == "Bug-Fix"){
+			$('#troublereporttext').show();
+		} else if(labelprefix == "Load-Test"){
+			$('#loadtestMessage').show();
+		} else {
+		 	$('#investigationtext').hide();
+			$('#troublereporttext').hide();
+			$('#loadtestMessage').hide();
+		}
+		
+		if((labelprefix=="Other" || labelprefix=="Others") && (labelsurfix != "ACL-Setting" && labelsurfix != "Inquiry" && labelsurfix != "Investigation" && labelsurfix != "Bug-Fix")){
+			 /*eg.component ==GCP && issue type == Others >> label = Others*/
+			labelprefix = "";
+			labelsurfix = "Others";
+		}else if(labelsurfix=="Bug-Fix"){
+			/*eg.compoent == any && issue type == "Bug-Fix" >> label = Bug-fix */
+			labelprefix = "";
+		} else if(labelprefix =="R-Login" || labelprefix=="OpenID" || labelprefix=="GDPR"){
+			labelsurfix = "";
+		} else if(labelprefix =="Load-Test" && labelsurfix != "Monitoring"){
+			/*eg.component ==Load-Test && issue type == Inquiry >> label = Other-Inquiry*/
+			labelprefix = "Other-";
+		}else {
+			/*eg.component ==Load-Test && issue type == Monitoring >> label = Load-Test-Monitoring*/
+			AJS.$("[id=label_1]").val(labelprefix+hyphen+labelsurfix);
+			return false;
+		}
+		if((labelprefix=="Other" || labelprefix=="Others") && (labelsurfix=="Other" || labelsurfix=="Others")){
+			/*just in case*/
+			labelprefix = "";
+			labelsurfix = "Others";
+		}
+		if(labelprefix=="" && labelsurfix==""){
+			/*just in case*/
+			labelprefix = "";
+			labelsurfix = "Others";
+		}
+		AJS.$("[id=label_1]").val(labelprefix+labelsurfix);
+    });
+});
+</script>
+
+
+
+
+<script>
+AJS.toInit(function(){
+    
+	/* AUI を適用させるための設定
+	*/
+/*======> Company and Division/Service Name List */	
+var companies = [  
+
+"Commerce & Marketing Company (C&M)",
+"Communications & Energy Company (CECO)",
+"Corporate Culture Division (CCD)",
+"Finance & Accounting Department (FAD)",
+"FinTech Group Company (FINCO)",
+"Global Ad Division (GAD)",
+"Group Company Division (GCD)",
+"Investment & Incubation Company (INCO)",
+"Marketing Division (MKD)",
+"Operations Division (OPD)",
+"Sports Business (SPCO)",
+"Tech Mgmt Div (TMD) / Tech Plt Dep (TPD) / Tech Ser Div (TSD)",
+];
+    
+var servicesText =  {
+
+
+"Commerce & Marketing Company (C&M)":[
+
+
+"AD-CV tracking system",
+"AMATERASU",
+"Brand Avenue",
+"Brand Marketing Platform Group (BMPG)",
+"Buyback Trade-in",
+"Car Portal Development Group",
+"China Business",
+"Compass(コンパス)",
+"Coupon Advance",
+"DOOH (Digital Out of Home)",
+"EC Expansion",
+"EC Product",
+"EC Quality Assurance",
+"Entertainment",
+"FirstMile",
+"GPAI",
+"Gurunavi Alliance Project",
+"Healthcare",
+"Home Life 1st Party",
+"Hometown tax",
+"Lead Generation",
+"MIHA",
+"Movie Contents",
+"Omatome",
+"OneStep",
+"Online Point Partner",
+"Payment Online",
+"Pet Tracker",
+"Point Incentive Solution Group",
+"Point Mail",
+"Purchase History",
+"Quality Improvement",
+"Questionnaire platform",
+"R-Messe",
+"Rakken (楽券)",
+"Rakuten 24",
+"Rakuten AdRoll",
+"Rakuten Affiliate",
+"Rakuten App Store/Market",
+"Rakuten Beauty",
+"Rakuten Bic",
+"Rakuten Blog",
+"Rakuten Books Download",
+"Rakuten Calendar",
+"Rakuten Car",
+"Rakuten Car Auction",
+"Rakuten Car Sharing",
+"Rakuten Carrier",
+"Rakuten Cash",
+"Rakuten Content",
+"Rakuten Data Marketing",
+"Rakuten Delivery",
+"Rakuten Deutschland",
+"Rakuten Dining",
+"Rakuten Drone",
+"Rakuten Europe",
+"Rakuten Express",
+"Rakuten Fashion",
+"Rakuten France",
+"Rakuten Games",
+"Rakuten Germany",
+"Rakuten Global Express",
+"Rakuten GORA",
+"Rakuten Healthcare",
+"Rakuten Ichiba",
+"Rakuten Infoseek",
+"Rakuten Infoseek News",
+"Rakuten Insight",
+"Rakuten kobo",
+"Rakuten Kドリームス (KDreams)",
+"Rakuten Lifull Stay",
+"Rakuten LINK News",
+"Rakuten LINKSHARE",
+"Rakuten LINKSHARE REVO",
+"Rakuten Lucky Kuji",
+"Rakuten Magazine",
+"Rakuten Marketing",
+"Rakuten Marketing Platform",
+"Rakuten Monkeys",
+"Rakuten Pasha",
+"Rakuten Pay Online",
+"Rakuten Point",
+"Rakuten POSA",
+"Rakuten Premium",
+"Rakuten RaCoupon",
+"Rakuten Raxy",
+"Rakuten Real Estate",
+"Rakuten Rebates",
+"Rakuten Recruiting",
+"Rakuten Rewards",
+"Rakuten SEIYU ネットスーパー(Net Super)",
+"Rakuten Spain",
+"Rakuten SQREEM",
+"Rakuten Super Logistics",
+"Rakuten Super Point Gallery",
+"Rakuten Super Point Screen",
+"Rakuten toto",
+"Rakuten Travel",
+"Rakuten Travel Camp",
+"Rakuten Travel Experiences",
+"Rakuten Travel Outbound",
+"Rakuten Ukraine",
+"Rakuten University",
+"Rakuten Wedding",
+"Rakuten ウェブ検索 (Web Search)",
+"Rakuten ブックス(Books)",
+"Rakuten ラクマ (Rakuma)",
+"Rakuten リアルタイム テイクアウト (Realtime Takeout)",
+"Rakuten リワード (Reward)",
+"Rakuten レシピ (Recipe)",
+"Rakuten 全国スーパー (Netsuper Platform)",
+"Rakuten 楽天市場 (Taiwan)",
+"Rakuten 競馬 (Horse racing)",
+"Rakuten 超ミニバイト(Minijob)",
+"Readee",
+"RMPSE",
+"RMS Mobile App",
+"RMS Recruiting",
+"RMS Service Square Partner Portal",
+"ROOM",
+"Shipping Carrier Gateway",
+"Slice",
+"SpoTribe",
+"TV",
+"Vacation STAY",
+"Voyagin",
+"Yamato Transport",
+"お気に入りブックマーク",
+"夢展望株式会社",
+"株式会社GSTV",
+"株式会社ＳＯＲＡ＆Ｃｏ．",
+"楽天特別運賃プログラム",
+"Others"
+],
+
+
+"Communications & Energy Company (CECO)":[
+
+
+"Business",
+"Entertainment",
+"LiveCommerce",
+"MNO (Rakuten Mobile)",
+"MVNO",
+"Rakuten (Iniesta Methodology)",
+"Rakuten (NBA)",
+"Rakuten Aquafadas",
+"Rakuten Browser",
+"Rakuten Communications Platform",
+"Rakuten Denwa",
+"Rakuten DX",
+"Rakuten Energy",
+"Rakuten Games",
+"Rakuten kobo",
+"Rakuten Link",
+"Rakuten Mobile",
+"Rakuten music",
+"Rakuten NFT Marketplace",
+"Rakuten Recipe",
+"Rakuten TV",
+"Rakuten Viber",
+"Rakuten VIKI",
+"Rakuten シニア (Senior)",
+"Rakuten チケット (Ticket)",
+"Rakuten ひかり (Hikari)",
+"Rakuten みん就 (Minshu)",
+"Rakuten 写真館 (Shashinkan)",
+"Remote Realtime Fortune Telling",
+"Send anywhere",
+"Others"
+],
+
+
+"Corporate Culture Division (CCD)":[
+
+
+"Fitness Club Committee",
+"Cafeteria Committee",
+"Employer Branding",
+"Engagement",
+"Environment",
+"ERG Promotion Team",
+"ESG Communication",
+"Insights & Innovation",
+"Marketing & Communication",
+"Rakuten Shugi",
+"Research & Development (Rakuten People and Culture Lab)",
+"Service Inclusion Team",
+"Social Empowerment",
+"Social Impact",
+"Sustainable Business",
+"Wellness",
+"Others"
+],
+
+
+"Finance & Accounting Department (FAD)":[
+
+
+"Accounting ",
+"AI Accounting",
+"Business Accounting",
+"Communication & Media Accounting",
+"EC Accounting",
+"Expense Control ",
+"Finance ",
+"Financial Accounting",
+"FinTech Accounting",
+"Funds Management",
+"Global Integration",
+"Global Visualization",
+"International Tax",
+"Investor Relations (IR / SR)",
+"Procurement",
+"Shared Accounting",
+"Tax",
+"Tax Compliance",
+"Tax Governance",
+"Others"
+],
+
+
+"FinTech Group Company (FINCO)":[
+
+
+"Rakuten Card",
+"Merchant",
+"Rakuten Bank",
+"Rakuten Cash",
+"Rakuten Check",
+"Rakuten Edy",
+"Rakuten Marketing",
+"Rakuten Pay",
+"Rakuten Point",
+"Rakuten Point Partner",
+"Rakuten TV",
+"Rakuten Wallet",
+"Rakuten 保険の比較 (Insurance Comparison)",
+"Rakuten 保険の総合窓口 (General Insurance Window)",
+"Rakuten 早トク給与 (Hayatoku salary)",
+"Rakuten 楽天ペット保険 (Pet Insurance)",
+"Rakuten 楽天損保 (General Insurance)",
+"Rakuten 楽天生命 (Life)",
+"Rakuten 楽天証券 (Securities)",
+"Rakuten 楽天銀行 (Bank)",
+"Risk Rating System",
+"Takara MC",
+"Others"
+],
+
+
+"Global Ad Division (GAD)":[
+
+
+"Affiliate Business",
+"Rakuten Group Asset Planning",
+"Media Solution ",
+"Mobile Planning ",
+"DMP Data Coordination Promotion ",
+"RUNA Promotion",
+"Risk & Compliance",
+"Legal Group",
+"Ad Review",
+"Others"
+],
+
+
+"Group Company Division (GCD)":[
+
+
+"Americas Audit",
+"APAC Audit",
+"Audit Planning",
+"Compliance Investigation",
+"EMEA Audit",
+"Governance Audit",
+"Governance Investigation",
+"Process Solutions",
+"Strategic Planning",
+"Tech Audit",
+"Others"
+],
+
+
+"Investment & Incubation Company (INCO)":[
+
+
+"Education",
+"PCR Test",
+"Ragri",
+"Rakuten Drone",
+"Rakuten Eagles",
+"Rakuten Farm",
+"Rakuten FinTech Fund",
+"Rakuten Ventures",
+"ReDucate",
+"Sharing Economy",
+"Vissel",
+"Others"
+],
+
+
+"Marketing Division (MKD)":[
+
+
+"ID/Membership/Point",
+"Club Rakuten UK",
+"Domain Management",
+"Governance",
+"Mamawari",
+"Rakuten Link",
+"Rakuten Optimism",
+"Others"
+],
+
+
+"Operations Division (OPD)":[
+
+
+"AMTD/RUSA/GDO",
+"Ecosystem Services",
+"Member News / 楽天会員ニュース",
+"Planning Section",
+"Public Inquiries Group",
+"R-Mail",
+"Rakuten Web Search",
+"Others"
+],
+
+
+"Sports Business (SPCO)":[
+
+
+"Iniesta Academy",
+"NBA Japan Games",
+"Rakuten Eagles",
+"Rakuten Monkeys",
+"Rakuten Sports",
+"Vissel",
+"Others"
+],
+
+
+"Tech Mgmt Div (TMD) / Tech Plt Dep (TPD) / Tech Ser Div (TSD)":[
+
+
+"Ad Click On",
+"AI Shield - Challenger",
+"Anti-Cyber Crime Office",
+"API Catalogue",
+"Bett1 Open",
+"Blockchain Lab",
+"Brand Marketing Platform Group (BMPG)",
+"Campaign Application Tool",
+"Channel Solutions",
+"Corporate Culture",
+"Corporate Development",
+"Data Science",
+"Digital Media Center",
+"E-Magazine",
+"EC Shopper Gateway",
+"Ecosystem Services Insights",
+"EU-ESD",
+"Felix Markup",
+"Finance & Accounting",
+"Fraud Prevention",
+"Global Ad",
+"Global Architecture Division",
+"Global Point App",
+"Global Point Club",
+"Global Privacy Office",
+"GMOS",
+"Group Company",
+"Insight (Research)",
+"Lead Generation",
+"Legal Section (RASIA)",
+"Lottery Platform",
+"Maker Showroom",
+"Mallorca Championship",
+"Marketing",
+"Membership",
+"Mercedes Cup",
+"Mobile Ecosystem Demo App",
+"myData",
+"Omatome",
+"One App",
+"One Cloud",
+"One Point",
+"Operation (GHR, GPD, GAFMD, PRD, etc)",
+"Payment",
+"Payment Platform",
+"Payment Step",
+"PITARI",
+"Point Parts Widget",
+"Point Platform",
+"Questionnaire Platform",
+"RaCoupon",
+"RAE",
+"Rakuten Affiliate",
+"Rakuten API Management Platform (RAMP)",
+"Rakuten Catalog Platform",
+"Rakuten Connect",
+"Rakuten for Business",
+"Rakuten Gateway",
+"Rakuten Link",
+"Rakuten Merchant Cloud",
+"Rakuten Mobile ECare",
+"Rakuten Pay Europe",
+"Rakuten Point Club",
+"Rakuten Point Club App",
+"Rakuten Revenue",
+"Rakuten 宝くじ (Kuji)",
+"RAT",
+"Reward SDK",
+"RIT",
+"RStar",
+"Search",
+"Service Operation Kaizen",
+"Sixth Sense",
+"Smart Coupon",
+"Stock Benefit",
+"Super DB (SPDB)",
+"SUSUMERU Platform",
+"Technology",
+"Tenancy Ads",
+"Tracing App",
+"Viber",
+"Web AR Lottery",
+"Web Search",
+"Web Search (Fitsme)",
+"Others"
+],
+
+
+};
+$('#play_serv_div').hide();
+
+/*======> Division/Service Name based on Company Selection Logic */
+    AJS.$('[name=customfield_27800]').auiSelect2();
+    AJS.$('[name=customfield_16103]').auiSelect2();
+
+    AJS.$(companies).each(function(i, companyName) {
+        AJS.$("<option>", {value:companyName, text:companyName}).appendTo('[name=customfield_27800]');
+    });
+
+    // The code below selects all services for now, regardless of the selected company.
+    /*  
+    var sv = services["Company A"];
+    AJS.$(sv).each(function(i,s) {
+        AJS.$("<option>", {value:s["id"], text:s["name"]}).appendTo('[name=combo-3166]');
+    });
+    */
+    
+    // Code for writing to a text field in JIRA
+    /*
+    var sv = servicesText["Company A"];
+    AJS.$(sv).each(function(i,s) {
+        AJS.$("<option>", {value:s, text:s}).appendTo('[name=combo-3166]');
+    });
+    */
+
+  	/* Company -> Services
+	The code below selects services for the companies selected in the "Company" field as defined in the "services" array. Uncomment to use.
+    */
+    AJS.$("[name=customfield_27800]").on("change", function(e){
+        $('#play_serv_div').hide();
+		
+		AJS.$('[name=customfield_16103] option').remove();
+        AJS.$('[name=customfield_16103]').prev('.select2-container').find('a span.select2-chosen').text("Please select...");
+        AJS.$("<option>", {value:"", text:"Please select..."}).appendTo('[name=customfield_16103]');
+        AJS.$("[name=customfield_16103]").prop("selectedIndex", 0);
+        var selectedCompany = AJS.$(this).val();
+        var sv = servicesText[selectedCompany];
+    
+        AJS.$(sv).each(function(i,s) {
+            AJS.$("<option>", {value:s, text:s}).appendTo('[name=customfield_16103]');
+        });
+/*----Other Service/Division Name  */
+		AJS.$("[name=customfield_16103]").on("change", function(e){
+		var serv_div = $('[name=customfield_16103]').val();
+		
+			if(serv_div == "Others"){
+				$('#play_serv_div').show();
+			}else {
+				$('#play_serv_div').hide();
+			}
+		});
+    });
+});
+</script>
+
+
+
+
+<!-- Generated by R-Atlassian Team (request form creation tool 0.9.14) -->
+<input type="hidden" name="project" value="IDCS" />
+<input type="hidden" name="issuetype" value="17" />
+<input type="hidden" name="csd-formId" value="1511" />
+<input type="hidden" name="labels" id="label_1" value="" />
+<input type="hidden" name="labels" id="label_2" value="" />
+<input type="hidden" name="summary_components" id="summary_components" value="" />
+
+<input type="hidden" name="issuelinks-linktype" value="relates to" />
+<div class="field-group">
+	<label data-jira="title">Summary<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text long-field" name="summary" id="summary" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="max-width:600px;"  />
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group"  >
+	<div class="description">
+		If you aren't sure about the Component/s then select "Others" to avoid any mislead to unrelated topic.
+	</div>
+	<label data-jira="title">Component/s<span class="aui-icon icon-required"></span></label>
+	<select class="select" name="components" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="change" style="max-width:600px;">
+	<option value="">Please select...</option>
+	</select>
+	
+	<div class="description">
+		
+	</div>
+</div>
+
+<div class="field-group"  >
+	<label data-jira="title">Request Type<span class="aui-icon icon-required"></span></label>
+	<select class="select" name="issueType" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="change"  style="max-width:600px;">
+	<option value="">Please select Component/s first...</option>
+	</select>
+	<div class="description">
+		
+	</div>	
+</div>
+<div class="field-group"  >
+	<div class="description">
+		Name of Group Company under which your Service/Division comes, for e.g. Ichiba, Travel belongs to Commerce Company, MNO belongs to Communication & Energy company, etc.
+		<div class="description" style="color:red">*If you are raising the request on behalf of the client, then below information should belong to client details (not your own details).
+		</div>
+	</div>
+	<label data-jira="title">Company (L1)<span class="aui-icon icon-required"></span></label>
+	<select class="select" name="customfield_27800" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="change" style="max-width:600px;">
+		<option value="">Please select...</option>
+	</select>
+	<div class="description">
+	</div>
+</div>
+
+<div class="field-group">
+	<div class="description">
+		Please input your L2 Organization/Department name from <a href="https://staff-info.rakuten-it.com/staff" target="_blank"> Staff search.</a>
+	</div>
+	<label data-jira="title">Department (L2)<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" name="customfield_12929" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" placeholder="e.g. Ecosystem Services Department (ESD)" style="max-width:600px;"/>
+	<div class="description">
+	</div>	
+</div>
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Department Manager (L2)<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field autocomplete-user" name="textfield-1684" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup"  />
+	<span class="aui-icon aui-icon-small aui-iconfont-user"></span>
+	<span class="textfield-1684-spinner" style=""></span>
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group">
+	<div class="description">
+		Name of your Service/Division which will use ID system, for e.g. Rakuten Lifull Stay, Rakuten Senior, Rakuten Ticket, Rakuten Wallet, Rakuten Rewards, RTV, etc. If your Service/Division not found in the list then select "Others" and input it manually.
+	</div>
+	<label data-jira="title">Service/Division<span class="aui-icon icon-required"></span></label>
+	<select class="select" name="customfield_16103" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="change" style="max-width:600px;">
+	<option value="">Please select Company first...</option>
+	</select>
+	<div class="description">
+
+	</div>
+</div>
+<div id="play_serv_div">
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Service Name<span class="aui-icon icon-required"></span></label>
+	<input type="text" class="text medium-long-field" name="textfield-1451" style="max-width:600px;" />
+</div></div>
+<div class="field-group">
+	<div class="description">
+		Please choose a member of Membership Client Service Group with whom you have consulted on this issue.
+	</div>
+	<label data-jira="title">Consulted with</label>
+	<input type="text" class="text medium-long-field autocomplete-user" name="customfield_15012"  />
+	<span class="aui-icon aui-icon-small aui-iconfont-user"></span>
+	<span class="customfield_15012-spinner" style=""></span>
+</div>
+<div class="field-group" data-jira="description:text">
+	<label data-jira="title">Related ticket in the past</label>
+	<input type="text" class="text medium-long-field" id="issuelinks-issues-textarea" name="issuelinks"  placeholder="IDCS-1234, IDCS-1111"  />
+	<div class="description">
+		
+	</div>
+</div>
+<div class="field-group" data-jira="description:text">
+	<div class="description">
+	 	ClientID of OMNI/CAT/RAE/RID or ServiceID of JID etc.
+	</div>
+	<label data-jira="title">Credential</label>
+	<input type="text" class="text medium-long-field" name="textfield-2207" placeholder="rakuten_sample_client, omnip21, i90" />
+</div>
+<div class="field-group" data-jira="description:textarea">
+	<div class="description" id="investigationtext" style="color:green;">
+		❗️For log related request, Please mention date, time range and the service id/name the user used.<br>   
+		(eg. user login to Ichiba top is failing during 2020 Jan 1st 10AM to 2020 Jan 2nd 9AM)<br>
+		❗️Step-by-step operations/screenshots of the situation could help faster investigation.<br> 
+		Thank you for cooperation.
+	</div>
+	<div class="description" id="troublereporttext" style="color:green;">
+		❗️Please mention date, time of the trouble occurred.</br>
+		Please provide step-by-step screenshot or videos for getting investigation quickly.<br> 
+		Thank you for cooperation.
+	</div>
+	<div class="description" id="loadtestMessage" style="color:green;">
+		For Load Test Application, please mention </br>
+		1. Service Name </br>
+		2. Purpose </br>
+		3. Test time </br>
+		4. Max QPS & how long will it lasts </br>
+		5. Which endpoint in ID side will be used </br>
+		6 .White list for IP/accounts are required or not ? (If yes please provide details) </br>
+		7. Monitoring from ID side is required or not ? </br>
+		8. Contact person from your service side </br>
+	</div>
+	<label data-jira="title">Background / Details of request<span class="aui-icon icon-required"></span></label>
+	<textarea class="textarea long-field" name="textarea-1307" data-aui-validation-field="" data-aui-validation-required="required" data-aui-validation-when="keyup" style="max-width:600px;height:415px;" ></textarea>
+</div>
+<div class="field-group" data-jira="description:file">
+	<label data-jira="title">Attachment file</label>
+	<input type="file" class="text medium-long-field" name="attachment"  />
+	<i name="csd_tooltip_file"><span class="aui-icon aui-icon-small aui-iconfont-page-default"></span></i>
+	<div class="description">
+		
+	</div>
+</div>
+
+<hr>
+<div class="field-group">
+	<button id="submit" class="aui-button submit" onclick=""><span class="aui-icon aui-icon-small aui-iconfont-jira">Regist</span> Send Request to JIRA</button>
+</div>
+
+
+
+
+<script>
+/* Submit Action
+*/
+var user_submit = function(){
+
+	AJS.$(":hidden[name=description]").remove();
+	AJS.$(":hidden[name=reporter]").remove();
+
+	var label = document.getElementById('label_1').value;
+	var component = document.getElementsByName('summary_components')[0].value;
+	var issue = document.getElementsByName('issueType')[0].value;
+	var summary = document.getElementById('summary').value;
+	
+	if(document.getElementsByName('issueType')[0].value == "Please select..." || document.getElementsByName('issueType')[0].value == ""){
+		alert("Please Select the 'Request Type' !!");
+		return false;
+	}
+  	if(component == "Omni" && (label == "Omni-Investigation" || label == "Bug-Fix" || label == "Omni-ACL-Setting")){
+		if(document.getElementsByName('textfield-2207')[0].value == ""){
+			alert("Please Input the OMNI 'ClientID' !!");
+			return false;
+		}
+	}   
+	if(document.getElementsByName('customfield_16103')[0].value == "Please select..." || document.getElementsByName('customfield_16103')[0].value == ""){
+		alert("Please Select the 'Service/Division' !!");
+		return false;
+	}
+	if(document.getElementsByName('customfield_12929')[0].value == " "){
+		alert("Please Input the 'Department (L2)' !!");
+		return false;
+	}
+	if(document.getElementsByName('customfield_16103')[0].value == "Others"){ 
+		if(document.getElementsByName('textfield-1451')[0].value == "" || document.getElementsByName('textfield-1451')[0].value == " "){
+			alert("Please input your 'Service Name' !!");
+			return false;
+		}
+	}else{
+		document.getElementsByName('textfield-1451')[0].value = document.getElementsByName('customfield_16103')[0].value;
+	}
+	
+	// Summary
+	document.getElementsByName('summary')[0].value = "[" + component + "]" + "[" + issue + "] " + summary;
+	/* Description の自動生成と設定
+	*/
+	AJS.$("<input>", {
+		type: "hidden",
+		name: "description",
+		value: RJS.CONFLUENCE.fairingDescription(".aui")
+	}).appendTo("#form_request");
+};
+</script>
+
+
